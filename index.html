@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ヒット&ブロー（超上級）</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .container { display: flex; gap: 20px; flex-wrap: wrap; }
+    .description { flex: 1; font-size: 14px; border: 1px solid #ccc; padding: 15px; background: #f9f9f9; min-width: 300px; }
+    .game { flex: 1; max-width: 500px; min-width: 300px; }
+    input, button, select { margin: 5px; padding: 5px; font-size: 16px; }
+    #result { font-weight: bold; margin-top: 10px; }
+    .game-over { color: green; font-size: 1.2em; }
+    .hit { color: white; background-color: green; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>ヒット&ブロー</h1>
+  <div class="container">
+    <div class="description">
+      <h2>🎮 ゲームの説明</h2>
+      <p>
+        「ヒット＆ブロー」はコンピューターが作ったランダムな数字を当てる推理ゲームです。<br>
+        入力した数字が正解と同じ位置・同じ数字なら「ヒット」、位置違いで含まれていれば「ブロー」です。
+      </p>
+      <ul>
+        <li><strong>ヒット</strong>: 数字と位置が正しい</li>
+        <li><strong>ブロー</strong>: 数字はあるが位置が違う</li>
+      </ul>
+      <p><strong>重複あり</strong>設定では、同じ数字が複数回使われる可能性があります。</p>
+      <p>例: 答えが <code>112</code>、予想が <code>012</code> → ヒット: 2, ブロー: 0</p>
+      <p>
+        「ヒント」ボタンを押すと、<strong>現在の予想のうち、位置も数字も合っている数字（ヒット）</strong>が緑で強調されます。<br>
+        これを参考に次の予想を考えましょう。
+      </p>
+    </div>
+
+    <div class="game">
+      <label for="difficulty">難易度:</label>
+      <select id="difficulty" onchange="resetGame(true)">
+        <option value="3-false">3桁・重複なし</option>
+        <option value="3-true">3桁・重複あり</option>
+        <option value="4-false">4桁・重複なし</option>
+        <option value="4-true">4桁・重複あり</option>
+        <option value="5-false">5桁・重複なし</option>
+        <option value="5-true">5桁・重複あり</option>
+      </select><br/>
+
+      <label for="guess">予想:</label>
+      <input id="guess" type="text" maxlength="6" placeholder="数字を入力" />
+      <button onclick="checkGuess()">判定</button>
+      <button onclick="resetGame(true)">リセット</button>
+      <button onclick="giveHint()">ヒント</button>
+
+      <p id="result"></p>
+      <ul id="history"></ul>
+    </div>
+  </div>
+
+  <script>
+    let answer = [];
+    let gameOver = false;
+    let currentLength = 4;
+
+    function getDifficulty() {
+      const val = document.getElementById("difficulty").value;
+      const [length, allowDup] = val.split("-");
+      return { length: parseInt(length), allowDuplicates: allowDup === "true" };
+    }
+
+    function generateAnswer(length, allowDup) {
+      const digits = [];
+      while (digits.length < length) {
+        const num = Math.floor(Math.random() * 10);
+        if (allowDup || !digits.includes(num)) {
+          digits.push(num);
+        }
+      }
+      return digits;
+    }
+
+    function resetGame(clearHistory = false) {
+      const { length, allowDuplicates } = getDifficulty();
+      currentLength = length;
+      answer = generateAnswer(length, allowDuplicates);
+      gameOver = false;
+      document.getElementById("result").textContent = "";
+      document.getElementById("guess").value = "";
+      document.getElementById("guess").maxLength = length;
+      document.getElementById("guess").disabled = false;
+      if (clearHistory) document.getElementById("history").innerHTML = "";
+      console.log("答え (デバッグ):", answer.join(""));
+    }
+
+    function checkGuess() {
+      if (gameOver) return;
+
+      const input = document.getElementById("guess").value;
+      const { length, allowDuplicates } = getDifficulty();
+
+      if (input.length !== length || isNaN(input)) {
+        alert(`${length}桁の数字を入力してください`);
+        return;
+      }
+
+      if (!allowDuplicates && new Set(input).size !== input.length) {
+        alert(`重複なしで${length}桁の数字を入力してください`);
+        return;
+      }
+
+      const guess = input.split("").map(Number);
+      const ansCopy = [...answer];
+      const guessCopy = [...guess];
+      let hit = 0, blow = 0;
+
+      for (let i = 0; i < length; i++) {
+        if (guess[i] === ansCopy[i]) {
+          hit++;
+          ansCopy[i] = guessCopy[i] = null;
+        }
+      }
+
+      for (let i = 0; i < length; i++) {
+        if (guessCopy[i] !== null && ansCopy.includes(guessCopy[i])) {
+          blow++;
+          ansCopy[ansCopy.indexOf(guessCopy[i])] = null;
+        }
+      }
+
+      const resultText = `${input} → ヒット: ${hit}, ブロー: ${blow}`;
+      const li = document.createElement("li");
+      li.textContent = resultText;
+      document.getElementById("history").appendChild(li);
+      document.getElementById("result").textContent = resultText;
+
+      if (hit === length) {
+        gameOver = true;
+        document.getElementById("result").classList.add("game-over");
+        document.getElementById("guess").disabled = true;
+        alert("🎉 正解です！");
+      }
+
+      document.getElementById("guess").value = "";
+    }
+
+    function giveHint() {
+      const input = document.getElementById("guess").value;
+      if (input.length !== currentLength) {
+        alert(`${currentLength}桁の予想を入力してからヒントを使ってください`);
+        return;
+      }
+
+      const guess = input.split("").map(Number);
+      let hint = "";
+      for (let i = 0; i < guess.length; i++) {
+        if (guess[i] === answer[i]) {
+          hint += `<span class="hit">${guess[i]}</span>`;
+        } else {
+          hint += guess[i];
+        }
+      }
+      document.getElementById("result").innerHTML = `ヒント: ${hint}`;
+    }
+
+    resetGame(true);
+
+    // Enterキーで判定実行できるようにする
+    document.getElementById("guess").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        checkGuess();
+      }
+    });
+  </script>
+</body>
+</html>
