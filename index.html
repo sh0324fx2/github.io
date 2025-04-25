@@ -37,17 +37,17 @@
 
     /* 小さなボタンのスタイル */
     .small-button {
-      font-size: 15px;  /* フォントサイズを小さく */
+      font-size: 12px;  /* フォントサイズを小さく */
       padding: 5px 10px; /* パディングを小さく */
       width: auto; /* 幅を自動にして、ボタンのテキストに合わせる */
     }
   </style>
 </head>
 <body>
-  <h1>ヒット&ブロー</h1>
   <div class="container">
     <div class="description">
-      <button class="fold-button" onclick="toggleDescription()">説明を折りたたむ</button>
+      <!-- タイトルも折りたたみ範囲に入れる -->
+      <h1>ヒット&ブロー</h1>
       <h2>🎮 ゲームの説明</h2>
       <p>
         「ヒット＆ブロー」はコンピューターが作ったランダムな数字を当てる推理ゲームです。<br>
@@ -63,6 +63,9 @@
         「ヒント」ボタンを押すと、<strong>現在の予想のうち、位置も数字も合っている数字（ヒット）</strong>が緑で強調されます。<br>
         そのうえで、履歴にも自動で追加されます。
       </p>
+
+      <!-- 折りたたみボタンを下に配置 -->
+      <button class="fold-button" onclick="toggleDescription()">説明を折りたたむ</button>
     </div>
 
     <div class="game">
