@@ -7,7 +7,7 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     h1 {
-      font-size: 15px; /* タイトルの文字を小さくする */
+      font-size: 20px; /* タイトルの文字を小さくする */
     }
     .container { display: flex; gap: 20px; flex-wrap: wrap; }
     .description { 
@@ -59,6 +59,11 @@
     </div>
 
     <div class="game">
+      <!-- 判定履歴を上に表示 -->
+      <ul id="history"></ul>
+
+      <p id="result"></p> <!-- 判定結果を下に表示 -->
+
       <label for="difficulty">難易度:</label>
       <select id="difficulty" onchange="resetGame(true)">
         <option value="3-false">3桁・重複なし</option>
@@ -79,9 +84,6 @@
       <button onclick="resetGame(true)">リセット</button>
       <button onclick="giveHint()">ヒント</button>
       <button onclick="showAnswer()">答えを見る</button>
-
-      <p id="result"></p>
-      <ul id="history"></ul>
     </div>
   </div>
 
