@@ -52,7 +52,7 @@
       </select><br/>
 
       <label for="guess">予想:</label>
-      <input id="guess" type="text" maxlength="6" placeholder="数字を入力" />
+      <input id="guess" type="text" maxlength="6" placeholder="数字を入力" inputmode="numeric" pattern="\d*" />
       <button onclick="checkGuess()">判定</button>
       <button onclick="resetGame(true)">リセット</button>
       <button onclick="giveHint()">ヒント</button>
@@ -173,6 +173,14 @@
     document.getElementById("guess").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         checkGuess();
+      }
+    });
+
+    // 入力制限：数字のみ、桁数制限
+    document.getElementById("guess").addEventListener("input", function (e) {
+      this.value = this.value.replace(/\D/g, ""); // 数字以外を削除
+      if (this.value.length > currentLength) {
+        this.value = this.value.slice(0, currentLength); // 桁数制限
       }
     });
   </script>
