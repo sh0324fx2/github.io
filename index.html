@@ -41,7 +41,7 @@
       <select id="difficulty" onchange="resetGame(true)">
         <option value="3-false">3桁・重複なし</option>
         <option value="3-true">3桁・重複あり</option>
-        <option value="4-false">4桁・重複なし</option>
+        <option value="4-false" selected>4桁・重複なし</option>
         <option value="4-true">4桁・重複あり</option>
         <option value="5-false">5桁・重複なし</option>
         <option value="5-true">5桁・重複あり</option>
@@ -56,6 +56,7 @@
       <button onclick="checkGuess()">判定</button>
       <button onclick="resetGame(true)">リセット</button>
       <button onclick="giveHint()">ヒント</button>
+      <button onclick="showAnswer()">答えを見る</button>
 
       <p id="result"></p>
       <ul id="history"></ul>
@@ -167,20 +168,27 @@
       document.getElementById("result").innerHTML = `ヒント: ${hint}`;
     }
 
+    function showAnswer() {
+      if (gameOver) return;
+      const answerStr = answer.join("");
+      document.getElementById("result").textContent = `正解は ${answerStr} でした。`;
+      document.getElementById("result").classList.add("game-over");
+      document.getElementById("guess").disabled = true;
+      gameOver = true;
+    }
+
     resetGame(true);
 
-    // Enterキーで判定実行できるようにする
     document.getElementById("guess").addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         checkGuess();
       }
     });
 
-    // 入力制限：数字のみ、桁数制限
     document.getElementById("guess").addEventListener("input", function (e) {
-      this.value = this.value.replace(/\D/g, ""); // 数字以外を削除
+      this.value = this.value.replace(/\D/g, "");
       if (this.value.length > currentLength) {
-        this.value = this.value.slice(0, currentLength); // 桁数制限
+        this.value = this.value.slice(0, currentLength);
       }
     });
   </script>
