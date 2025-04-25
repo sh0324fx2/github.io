@@ -7,18 +7,37 @@
   <style>
     body { font-family: sans-serif; margin: 20px; }
     .container { display: flex; gap: 20px; flex-wrap: wrap; }
-    .description { flex: 1; font-size: 14px; border: 1px solid #ccc; padding: 15px; background: #f9f9f9; min-width: 300px; }
+    .description { 
+      flex: 1; font-size: 14px; border: 1px solid #ccc; padding: 15px; background: #f9f9f9; 
+      min-width: 300px; 
+    }
     .game { flex: 1; max-width: 500px; min-width: 300px; }
     input, button, select { margin: 5px; padding: 5px; font-size: 16px; width: calc(100% - 20px); box-sizing: border-box; }
     #result { font-weight: bold; margin-top: 10px; }
     .game-over { color: green; font-size: 1.2em; }
     .hit { color: white; background-color: green; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    
+    /* 折りたたみボタンのスタイル */
+    .fold-button {
+      background-color: #007BFF;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+    .fold-button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
   <h1>ヒット&ブロー</h1>
   <div class="container">
     <div class="description">
+      <button class="fold-button" onclick="toggleDescription()">説明を折りたたむ</button>
       <h2>🎮 ゲームの説明</h2>
       <p>
         「ヒット＆ブロー」はコンピューターが作ったランダムな数字を当てる推理ゲームです。<br>
@@ -175,6 +194,18 @@
       document.getElementById("result").classList.add("game-over");
       document.getElementById("guess").disabled = true;
       gameOver = true;
+    }
+
+    function toggleDescription() {
+      const description = document.querySelector('.description');
+      const button = document.querySelector('.fold-button');
+      if (description.style.display === 'none') {
+        description.style.display = 'block';
+        button.textContent = '説明を折りたたむ';
+      } else {
+        description.style.display = 'none';
+        button.textContent = '説明を表示する';
+      }
     }
 
     resetGame(true);
