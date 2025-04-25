@@ -34,6 +34,13 @@
     .fold-button:hover {
       background-color: #0056b3;
     }
+
+    /* 小さなボタンのスタイル */
+    .small-button {
+      font-size: 15px;  /* フォントサイズを小さく */
+      padding: 5px 10px; /* パディングを小さく */
+      width: auto; /* 幅を自動にして、ボタンのテキストに合わせる */
+    }
   </style>
 </head>
 <body>
@@ -81,9 +88,9 @@
       <label for="guess">予想:</label>
       <input id="guess" type="text" maxlength="7" placeholder="数字を入力" inputmode="numeric" pattern="\d*" />
       <button onclick="checkGuess()">判定</button>
-      <button onclick="resetGame(true)">リセット</button>
-      <button onclick="giveHint()">ヒント</button>
-      <button onclick="showAnswer()">答えを見る</button>
+      <button class="small-button" onclick="resetGame(true)">リセット</button>
+      <button class="small-button" onclick="giveHint()">ヒント</button>
+      <button class="small-button" onclick="showAnswer()">答えを見る</button>
     </div>
   </div>
 
